@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dabido Admin Dashboard</title>
+
+<link rel="stylesheet" href="../style.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+}
+
+header{
+background:#111827;
+color:#fff;
+padding:18px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+}
+
+.container{
+padding:15px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:15px;
+}
+
+.card{
+background:#fff;
+padding:20px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.card h3{
+margin:0;
+font-size:18px;
+}
+
+.card h1{
+margin-top:10px;
+color:#16a34a;
+}
+
+.menu{
+margin-top:20px;
+display:grid;
+gap:12px;
+}
+
+.menu button{
+padding:15px;
+border:none;
+border-radius:10px;
+font-size:17px;
+background:#16a34a;
+color:#fff;
+cursor:pointer;
+}
+
+.menu button:hover{
+background:#15803d;
+}
+
+.logout{
+background:#dc2626 !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+🚖 Dabido Admin Dashboard
+
+</header>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Total Users</h3>
+
+<h1 id="users">0</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Total Riders</h3>
+
+<h1 id="riders">0</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Total Rides</h3>
+
+<h1 id="rides">0</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Total Revenue</h3>
+
+<h1 id="revenue">₹0</h1>
+
+</div>
+
+</div>
+
+<div class="menu">
+
+<button onclick="location.href='users.html'">
+👥 Manage Users
+</button>
+
+<button onclick="location.href='riders.html'">
+🛵 Manage Riders
+</button>
+
+<button onclick="location.href='rides.html'">
+🚖 Ride Management
+</button>
+
+<button onclick="refreshDashboard()">
+🔄 Refresh Dashboard
+</button>
+
+<button class="logout" onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+function loadDashboard(){
+
+let users =
+JSON.parse(localStorage.getItem("users")) || [];
+
+let rides =
+JSON.parse(localStorage.getItem("rides")) || [];
+
+let riderCount = 0;
+
+users.forEach(function(user){
+
+if(user.role === "Rider"){
+riderCount++;
+}
+
+});
+
+let revenue = 0;
+
+rides.forEach(function(ride){
+
+let fare = parseInt(
+String(ride.fare).replace(/[^\d]/g,"")
+) || 0;
+
+revenue += fare;
+
+});
+
+document.getElementById("users").innerHTML = users.length;
+
+document.getElementById("riders").innerHTML = riderCount;
+
+document.getElementById("rides").innerHTML = rides.length;
+
+document.getElementById("revenue").innerHTML = "₹" + revenue;
+
+}
+
+function refreshDashboard(){
+
+loadDashboard();
+
+alert("Dashboard Refreshed");
+
+}
+
+function logout(){
+
+window.location.href="../login.html";
+
+}
+
+loadDashboard();
+
+</script>
+
+</body>
+</html>
