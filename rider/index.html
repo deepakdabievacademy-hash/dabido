@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dabido Rider Dashboard</title>
+
+<link rel="stylesheet" href="../style.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+}
+
+header{
+background:#16a34a;
+color:#fff;
+padding:15px;
+font-size:22px;
+font-weight:bold;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.container{
+padding:15px;
+}
+
+.status{
+background:#fff;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:17px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.online{
+background:#16a34a;
+color:white;
+}
+
+.offline{
+background:#dc2626;
+color:white;
+}
+
+.accept{
+background:#2563eb;
+color:white;
+}
+
+.reject{
+background:#dc2626;
+color:white;
+}
+
+.card{
+background:white;
+padding:15px;
+margin-top:15px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+#map{
+height:250px;
+background:#ddd;
+border-radius:10px;
+margin-top:15px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+🚖 Rider Dashboard
+
+<span id="statusText">
+Offline
+</span>
+
+</header>
+
+<div class="container">
+
+<div class="status">
+
+<h2>Today's Earnings</h2>
+
+<h1 id="earning">
+₹0
+</h1>
+
+<button
+class="online"
+onclick="goOnline()">
+
+Go Online
+
+</button>
+
+<button
+class="offline"
+onclick="goOffline()">
+
+Go Offline
+
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>Ride Request</h2>
+
+<p>
+
+<b>Pickup:</b>
+
+<span id="pickup">
+
+Waiting...
+
+</span>
+
+</p>
+
+<p>
+
+<b>Drop:</b>
+
+<span id="drop">
+
+Waiting...
+
+</span>
+
+</p>
+
+<p>
+
+<b>Fare:</b>
+
+<span id="fare">
+
+₹0
+
+</span>
+
+</p>
+
+<button
+class="accept"
+onclick="acceptRide()">
+
+Accept Ride
+
+</button>
+
+<button
+class="reject"
+onclick="rejectRide()">
+
+Reject Ride
+
+</button>
+
+</div>
+
+<div id="map">
+
+Map
+
+</div>
+
+</div>
+
+<script>
+
+let online=false;
+
+let earning=0;
+
+function goOnline(){
+
+online=true;
+
+document.getElementById("statusText").innerHTML="Online";
+
+generateRide();
+
+}
+
+function goOffline(){
+
+online=false;
+
+document.getElementById("statusText").innerHTML="Offline";
+
+}
+
+function generateRide(){
+
+if(!online)return;
+
+let pickupList=["Railway Station","Bus Stand","Market","Hospital"];
+
+let dropList=["Airport","College","Mall","Hotel"];
+
+let p=pickupList[Math.floor(Math.random()*pickupList.length)];
+
+let d=dropList[Math.floor(Math.random()*dropList.length)];
+
+let fare=Math.floor(Math.random()*250)+80;
+
+document.getElementById("pickup").innerHTML=p;
+
+document.getElementById("drop").innerHTML=d;
+
+document.getElementById("fare").innerHTML="₹"+fare;
+
+localStorage.setItem("currentFare",fare);
+
+}
+
+function acceptRide(){
+
+let fare=parseInt(localStorage.getItem("currentFare"))||0;
+
+earning+=fare;
+
+document.getElementById("earning").innerHTML="₹"+earning;
+
+alert("Ride Accepted");
+
+generateRide();
+
+}
+
+function rejectRide(){
+
+alert("Ride Rejected");
+
+generateRide();
+
+}
+
+</script>
+
+</body>
+</html>
