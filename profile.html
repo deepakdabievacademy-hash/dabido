@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dabido Profile</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+body{
+margin:0;
+background:#f5f5f5;
+font-family:Arial,sans-serif;
+}
+
+header{
+background:#111827;
+color:#fff;
+padding:16px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.profile-img{
+width:100px;
+height:100px;
+border-radius:50%;
+background:#ddd;
+display:block;
+margin:auto;
+object-fit:cover;
+}
+
+h2{
+text-align:center;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:none;
+border-radius:8px;
+font-size:17px;
+cursor:pointer;
+}
+
+.save{
+background:#16a34a;
+color:#fff;
+}
+
+.logout{
+background:#dc2626;
+color:#fff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+My Profile
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<img
+src="https://via.placeholder.com/100"
+class="profile-img"
+id="photo">
+
+<h2>User Profile</h2>
+
+<input
+type="text"
+id="name"
+placeholder="Full Name">
+
+<input
+type="tel"
+id="phone"
+placeholder="Mobile Number">
+
+<input
+type="email"
+id="email"
+placeholder="Email Address">
+
+<button
+class="save"
+onclick="saveProfile()">
+
+Save Profile
+
+</button>
+
+<button
+class="logout"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+function loadProfile(){
+
+let profile=
+JSON.parse(localStorage.getItem("profile"));
+
+if(profile){
+
+document.getElementById("name").value=
+profile.name||"";
+
+document.getElementById("phone").value=
+profile.phone||"";
+
+document.getElementById("email").value=
+profile.email||"";
+
+}
+
+}
+
+function saveProfile(){
+
+let profile={
+
+name:document.getElementById("name").value,
+
+phone:document.getElementById("phone").value,
+
+email:document.getElementById("email").value
+
+};
+
+localStorage.setItem(
+"profile",
+JSON.stringify(profile)
+);
+
+alert("Profile Saved Successfully");
+
+}
+
+function logout(){
+
+localStorage.removeItem("role");
+
+window.location.href="login.html";
+
+}
+
+loadProfile();
+
+</script>
+
+</body>
+</html>
