@@ -3,133 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dabido - Book Bike, Auto & Cab</title>
+<title>Dabido</title>
 
 <link rel="stylesheet" href="style.css">
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-body{
-background:#f5f5f5;
-}
-
-header{
-background:#FFD400;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-position:sticky;
-top:0;
-}
-
-.logo{
-font-size:26px;
-font-weight:bold;
-}
-
-.menu{
-font-size:28px;
-cursor:pointer;
-}
-
-.hero{
-padding:20px;
-}
-
-.card{
-background:#fff;
-padding:20px;
-border-radius:15px;
-box-shadow:0 2px 10px rgba(0,0,0,.15);
-}
-
-input,select{
-width:100%;
-padding:14px;
-margin-top:10px;
-border-radius:10px;
-border:1px solid #ddd;
-}
-
-button{
-width:100%;
-padding:15px;
-margin-top:15px;
-background:#FFD400;
-border:none;
-border-radius:10px;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.vehicle{
-display:flex;
-gap:10px;
-margin-top:20px;
-}
-
-.box{
-flex:1;
-background:white;
-padding:15px;
-text-align:center;
-border-radius:12px;
-cursor:pointer;
-box-shadow:0 2px 10px rgba(0,0,0,.1);
-}
-
-.box.active{
-background:#FFD400;
-}
-
-.price{
-margin-top:20px;
-font-size:24px;
-font-weight:bold;
-text-align:center;
-}
-
-.history{
-margin-top:30px;
-background:white;
-padding:20px;
-border-radius:15px;
-}
-
-.item{
-padding:10px;
-border-bottom:1px solid #ddd;
-}
-</style>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 </head>
 
 <body>
 
-<header>
+<header class="topbar">
 
 <div class="logo">
-🚕 Dabido
+🚖 Dabido
 </div>
 
-<div class="menu">
-☰
+<div class="profile">
+
+<a href="profile.html">👤</a>
+
 </div>
 
 </header>
 
-<div class="hero">
+<div id="map"></div>
 
-<div class="card">
+<div class="booking">
 
 <h2>Book Your Ride</h2>
 
@@ -141,47 +43,37 @@ placeholder="Pickup Location">
 <input
 type="text"
 id="drop"
-placeholder="Drop Location">
-
-<select id="vehicle">
-
-<option value="bike">Bike</option>
-
-<option value="auto">
-Auto
-</option>
-
-<option value="cab">
-Cab
-</option>
-
-</select>
+placeholder="Destination">
 
 <div class="vehicle">
 
-<div class="box active">
+<div class="vehicle-card" onclick="selectVehicle('Bike',80)">
 🏍️
-<br>
-Bike
+<h3>Bike</h3>
+<p>₹80+</p>
 </div>
 
-<div class="box">
+<div class="vehicle-card" onclick="selectVehicle('Auto',120)">
 🛺
-<br>
-Auto
+<h3>Auto</h3>
+<p>₹120+</p>
 </div>
 
-<div class="box">
+<div class="vehicle-card" onclick="selectVehicle('Cab',220)">
 🚗
-<br>
-Cab
+<h3>Cab</h3>
+<p>₹220+</p>
 </div>
 
 </div>
 
-<div class="price" id="fare">
-Fare ₹0
-</div>
+<h3 id="selectedVehicle">
+No vehicle selected
+</h3>
+
+<h2 id="fare">
+Estimated Fare ₹0
+</h2>
 
 <button onclick="bookRide()">
 Book Ride
@@ -189,21 +81,30 @@ Book Ride
 
 </div>
 
-<div class="history">
+<nav class="bottom">
 
-<h2>Ride History</h2>
+<a href="index.html">
+🏠
+<br>
+Home
+</a>
 
-<div id="history">
+<a href="history.html">
+📖
+<br>
+History
+</a>
 
-No rides yet.
+<a href="profile.html">
+👤
+<br>
+Profile
+</a>
 
-</div>
-
-</div>
-
-</div>
+</nav>
 
 <script src="script.js"></script>
+<script src="map.js"></script>
 
 </body>
 </html>
