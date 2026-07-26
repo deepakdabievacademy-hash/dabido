@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dabido Login</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f4f4;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+width:90%;
+max-width:380px;
+background:#fff;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+.tabs{
+display:flex;
+margin-bottom:20px;
+}
+
+.tabs button{
+flex:1;
+padding:12px;
+border:none;
+background:#ddd;
+font-size:16px;
+cursor:pointer;
+}
+
+.tabs button.active{
+background:#16a34a;
+color:#fff;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+.loginBtn{
+width:100%;
+padding:14px;
+background:#16a34a;
+color:white;
+border:none;
+border-radius:8px;
+font-size:18px;
+cursor:pointer;
+}
+
+.loginBtn:hover{
+background:#15803d;
+}
+
+p{
+text-align:center;
+margin-top:15px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Dabido Login</h2>
+
+<div class="tabs">
+<button id="userBtn" class="active" onclick="selectRole('user')">User</button>
+<button id="riderBtn" onclick="selectRole('rider')">Rider</button>
+</div>
+
+<input type="text" id="mobile" placeholder="Mobile Number">
+
+<input type="password" id="password" placeholder="Password">
+
+<button class="loginBtn" onclick="login()">Login</button>
+
+<p>Demo Login</p>
+<p>User: 9999999999</p>
+<p>Rider: 8888888888</p>
+
+</div>
+
+<script>
+
+let role="user";
+
+function selectRole(type){
+
+role=type;
+
+document.getElementById("userBtn").classList.remove("active");
+document.getElementById("riderBtn").classList.remove("active");
+
+if(type==="user"){
+document.getElementById("userBtn").classList.add("active");
+}else{
+document.getElementById("riderBtn").classList.add("active");
+}
+
+}
+
+function login(){
+
+let mobile=document.getElementById("mobile").value;
+let password=document.getElementById("password").value;
+
+if(mobile===""||password===""){
+alert("Please fill all fields");
+return;
+}
+
+localStorage.setItem("role",role);
+localStorage.setItem("mobile",mobile);
+
+if(role==="user"){
+window.location.href="index.html";
+}else{
+window.location.href="rider/index.html";
+}
+
+}
+
+</script>
+
+</body>
+</html>
