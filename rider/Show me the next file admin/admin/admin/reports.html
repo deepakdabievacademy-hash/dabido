@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dabido Admin Reports</title>
+
+<link rel="stylesheet" href="../style.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+}
+
+header{
+background:#111827;
+color:#fff;
+padding:16px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:15px;
+}
+
+.card{
+background:#fff;
+padding:20px;
+margin-bottom:15px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.card h2{
+margin:0 0 15px;
+}
+
+.report{
+display:flex;
+justify-content:space-between;
+padding:10px 0;
+border-bottom:1px solid #eee;
+}
+
+.report:last-child{
+border-bottom:none;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:12px;
+border:none;
+border-radius:10px;
+font-size:17px;
+cursor:pointer;
+}
+
+.pdf{
+background:#dc2626;
+color:#fff;
+}
+
+.csv{
+background:#16a34a;
+color:#fff;
+}
+
+.back{
+background:#2563eb;
+color:#fff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+📊 Reports Dashboard
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Business Report</h2>
+
+<div class="report">
+<span>Total Users</span>
+<b id="users">0</b>
+</div>
+
+<div class="report">
+<span>Total Riders</span>
+<b id="riders">0</b>
+</div>
+
+<div class="report">
+<span>Total Rides</span>
+<b id="rides">0</b>
+</div>
+
+<div class="report">
+<span>Total Revenue</span>
+<b id="revenue">₹0</b>
+</div>
+
+<div class="report">
+<span>Completed Rides</span>
+<b id="completed">0</b>
+</div>
+
+<div class="report">
+<span>Cancelled Rides</span>
+<b id="cancelled">0</b>
+</div>
+
+</div>
+
+<button class="pdf" onclick="downloadPDF()">
+
+📄 Download PDF
+
+</button>
+
+<button class="csv" onclick="downloadCSV()">
+
+📥 Download CSV
+
+</button>
+
+<button class="back" onclick="window.location='index.html'">
+
+⬅ Back
+
+</button>
+
+</div>
+
+<script>
+
+function loadReport(){
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+let rides=JSON.parse(localStorage.getItem("rides"))||[];
+
+let riders=0;
+
+let revenue=0;
+
+let completed=0;
+
+let cancelled=0;
+
+users.forEach(function(user){
+
+if(user.role==="Rider") riders++;
+
+});
+
+rides.forEach(function(ride){
+
+let fare=parseInt(String(ride.fare).replace(/[^\d]/g,""))||0;
+
+revenue+=fare;
+
+if(ride.status==="Completed") completed++;
+
+if(ride.status==="Cancelled") cancelled++;
+
+});
+
+document.getElementById("users").innerHTML=users.length;
+
+document.getElementById("riders").innerHTML=riders;
+
+document.getElementById("rides").innerHTML=rides.length;
+
+document.getElementById("revenue").innerHTML="₹"+revenue;
+
+document.getElementById("completed").innerHTML=completed;
+
+document.getElementById("cancelled").innerHTML=cancelled;
+
+}
+
+function downloadCSV(){
+
+let rides=JSON.parse(localStorage.getItem("rides"))||[];
+
+let csv="Vehicle,Pickup,Drop,Fare,Status,Date\n";
+
+rides.forEach(function(r){
+
+csv+=`${r.vehicle},${r.pickup},${r.drop},${r.fare},${r.status},${r.date}\n`;
+
+});
+
+let blob=new Blob([csv],{type:"text/csv"});
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="reports.csv";
+
+a.click();
+
+}
+
+function downloadPDF(){
+
+alert("PDF Export feature will be available with backend integration.");
+
+}
+
+loadReport();
+
+</script>
+
+</body>
+</html>
