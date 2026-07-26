@@ -1,143 +1,198 @@
-let selectedVehicle = "bike";
+// ===============================
+// Dabido Script
+// ===============================
 
-const vehicleBoxes = document.querySelectorAll(".box");
+let selectedVehicle = "";
+let baseFare = 0;
 
-vehicleBoxes.forEach((box) => {
-    box.addEventListener("click", () => {
+// Vehicle Select
+function selectVehicle(vehicle, fare) {
 
-        vehicleBoxes.forEach((b) => b.classList.remove("active"));
-        box.classList.add("active");
+    selectedVehicle = vehicle;
+    baseFare = fare;
 
-        selectedVehicle = box.innerText.toLowerCase();
-
-        calculateFare();
+    document.querySelectorAll(".vehicle-card").forEach(card => {
+        card.classList.remove("active");
     });
-});
 
-document.getElementById("vehicle").addEventListener("change", function () {
-    selectedVehicle = this.value;
+    event.currentTarget.classList.add("active");
+
+    document.getElementById("selectedVehicle").innerHTML =
+        "Selected : " + vehicle;
+
     calculateFare();
-});
-
-function calculateFare() {
-
-    let fare = 0;
-
-    switch (selectedVehicle) {
-
-        case "bike":
-            fare = 80;
-            break;
-
-        case "auto":
-            fare = 150;
-            break;
-
-        case "cab":
-            fare = 250;
-            break;
-
-        default:
-            fare = 100;
-    }
-
-    document.getElementById("fare").innerHTML =
-        "Fare ₹" + fare;
-
-    return fare;
 }
 
-calculateFare();
+// Fare Calculation
+function calculateFare() {
 
-function bookRide() {
+    let pickup = document.getElementById("pickup").value.trim();
+    let drop = document.getElementById("drop").value.trim();
 
-    const pickup =
-        document.getElementById("pickup").value.trim();
-
-    const drop =
-        document.getElementById("drop").value.trim();
-
-    if (pickup === "" || drop === "") {
-
-        alert("Please enter pickup and drop location.");
-
+    if (pickup === "" || drop === "" || baseFare === 0) {
+        document.getElementById("fare").innerHTML =
+            "Estimated Fare ₹0";
         return;
     }
 
-    const fare = calculateFare();
+    let extra = Math.floor(Math.random() * 120) + 20;
 
-    const ride = {
+    let total = baseFare + extra;
+
+    document.getElementById("fare").innerHTML =
+        "Estimated Fare ₹" + total;
+}
+
+// Auto Update Fare
+let pickupInput = document.getElementById("pickup");
+let dropInput = document.getElementById("drop");
+
+if (pickupInput)
+    pickupInput.addEventListener("keyup", calculateFare);
+
+if (dropInput)
+    dropInput.addEventListener("keyup", calculateFare);
+
+// Book Ride
+function bookRide() {
+
+    let pickup = document.getElementById("pickup").value.trim();
+    let drop = document.getElementById("drop").value.trim();
+
+    if (pickup === "") {
+        alert("Enter Pickup Location");
+        return;
+    }
+
+    if (drop === "") {
+        alert("Enter Destination");
+        return;
+    }
+
+    if (selectedVehicle === "") {
+        alert("Select Vehicle");
+        return;
+    }
+
+    let fareText =
+        document.getElementById("fare").innerText;
+
+    let ride = {
+
+        vehicle: selectedVehicle,
 
         pickup: pickup,
 
         drop: drop,
 
-        vehicle: selectedVehicle,
+        fare: fareText,
 
-        fare: fare,
+        status: "Booked",
 
         date: new Date().toLocaleString()
 
     };
 
     let rides =
-        JSON.parse(localStorage.getItem("dabidoRides")) || [];
+        JSON.parse(localStorage.getItem("rides")) || [];
 
     rides.unshift(ride);
 
-    localStorage.setItem(
-        "dabidoRides",
-        JSON.stringify(rides)
-    );
+    localStorage.setItem("rides",
+        JSON.stringify(rides));
 
-    alert("Ride Booked Successfully 🚖");
+    alert("Ride Booked Successfully!");
 
-    document.getElementById("pickup").value = "";
-
-    document.getElementById("drop").value = "";
-
-    loadHistory();
 }
 
+// Profile Save
+function saveProfile(name, phone) {
+
+    let profile = {
+
+        name: name,
+
+        phone: phone
+
+    };
+
+    localStorage.setItem("profile",
+        JSON.stringify(profile));
+
+}
+
+// Profile Load
+function loadProfile() {
+
+    let profile =
+        JSON.parse(localStorage.getItem("profile"));
+
+    if (!profile)
+        return;
+
+    if (document.getElementById("name"))
+        document.getElementById("name").value =
+            profile.name;
+
+    if (document.getElementById("phone"))
+        document.getElementById("phone").value =
+            profile.phone;
+
+}
+
+// Ride History
 function loadHistory() {
 
-    const history =
+    let container =
         document.getElementById("history");
 
+    if (!container)
+        return;
+
     let rides =
-        JSON.parse(localStorage.getItem("dabidoRides")) || [];
+        JSON.parse(localStorage.getItem("rides")) || [];
 
     if (rides.length === 0) {
 
-        history.innerHTML = "No rides yet.";
+        container.innerHTML =
+            "<h3>No Ride History</h3>";
 
         return;
+
     }
 
-    history.innerHTML = "";
+    let html = "";
 
-    rides.forEach((ride) => {
+    rides.forEach(function(ride) {
 
-        history.innerHTML += `
+        html += `
+        <div class="card">
 
-<div class="item">
+        <h3>${ride.vehicle}</h3>
 
-<b>${ride.vehicle.toUpperCase()}</b><br>
+        <p><b>Pickup:</b> ${ride.pickup}</p>
 
-📍 ${ride.pickup}<br>
+        <p><b>Drop:</b> ${ride.drop}</p>
 
-🏁 ${ride.drop}<br>
+        <p><b>${ride.fare}</b></p>
 
-💰 ₹${ride.fare}<br>
+        <p>Status : ${ride.status}</p>
 
-🕒 ${ride.date}
+        <small>${ride.date}</small>
 
-</div>
-
-`;
+        </div>
+        `;
 
     });
 
+    container.innerHTML = html;
+
 }
 
-loadHistory();
+window.onload = function () {
+
+    loadProfile();
+
+    loadHistory();
+
+};
