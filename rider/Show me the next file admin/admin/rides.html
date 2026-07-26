@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Manage Riders</title>
+
+<link rel="stylesheet" href="../style.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+}
+
+header{
+background:#16a34a;
+color:#fff;
+padding:16px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:15px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+box-sizing:border-box;
+}
+
+.card{
+background:#fff;
+padding:15px;
+margin-bottom:15px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.card h3{
+margin:0 0 10px;
+}
+
+.card p{
+margin:5px 0;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin:5px;
+font-size:15px;
+}
+
+.approve{
+background:#16a34a;
+color:white;
+}
+
+.block{
+background:#f59e0b;
+color:white;
+}
+
+.delete{
+background:#dc2626;
+color:white;
+}
+
+.back{
+width:100%;
+padding:14px;
+margin-top:20px;
+background:#2563eb;
+color:white;
+font-size:17px;
+border:none;
+border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+🛵 Manage Riders
+
+</header>
+
+<div class="container">
+
+<input
+type="text"
+id="search"
+placeholder="Search Rider..."
+onkeyup="searchRiders()">
+
+<div id="list"></div>
+
+<button
+class="back"
+onclick="window.location='index.html'">
+
+⬅ Back to Dashboard
+
+</button>
+
+</div>
+
+<script>
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+let riders=users.filter(function(u){
+
+return u.role==="Rider";
+
+});
+
+function show(data){
+
+let html="";
+
+if(data.length===0){
+
+html="<h2>No Riders Found</h2>";
+
+}else{
+
+data.forEach(function(rider,index){
+
+let status=rider.status||"Approved";
+
+html+=`
+
+<div class="card">
+
+<h3>${rider.name}</h3>
+
+<p><b>Phone:</b> ${rider.phone}</p>
+
+<p><b>Email:</b> ${rider.email}</p>
+
+<p><b>Status:</b> ${status}</p>
+
+<button
+class="approve"
+onclick="approve(${index})">
+
+Approve
+
+</button>
+
+<button
+class="block"
+onclick="block(${index})">
+
+Block
+
+</button>
+
+<button
+class="delete"
+onclick="removeRider(${index})">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+document.getElementById("list").innerHTML=html;
+
+}
+
+function searchRiders(){
+
+let key=document.getElementById("search").value.toLowerCase();
+
+let result=riders.filter(function(r){
+
+return r.name.toLowerCase().includes(key)
+
+||r.phone.includes(key)
+
+||r.email.toLowerCase().includes(key);
+
+});
+
+show(result);
+
+}
+
+function approve(index){
+
+riders[index].status="Approved";
+
+alert("Rider Approved");
+
+show(riders);
+
+}
+
+function block(index){
+
+riders[index].status="Blocked";
+
+alert("Rider Blocked");
+
+show(riders);
+
+}
+
+function removeRider(index){
+
+if(confirm("Delete Rider?")){
+
+riders.splice(index,1);
+
+show(riders);
+
+}
+
+}
+
+show(riders);
+
+</script>
+
+</body>
+</html>
