@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dabido Admin Payments</title>
+
+<link rel="stylesheet" href="../style.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+}
+
+header{
+background:#111827;
+color:white;
+padding:16px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:15px;
+}
+
+.summary{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
+margin-bottom:20px;
+}
+
+.card{
+background:#fff;
+padding:15px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.card h3{
+margin:0;
+font-size:16px;
+}
+
+.card h2{
+margin-top:10px;
+color:#16a34a;
+}
+
+input{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+margin-bottom:15px;
+font-size:16px;
+box-sizing:border-box;
+}
+
+.payment{
+background:#fff;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.payment p{
+margin:5px 0;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.paid{
+background:#16a34a;
+color:white;
+}
+
+.export{
+width:100%;
+padding:14px;
+background:#2563eb;
+color:white;
+font-size:17px;
+margin-top:20px;
+}
+
+.back{
+width:100%;
+padding:14px;
+background:#111827;
+color:white;
+font-size:17px;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+💳 Payment Management
+
+</header>
+
+<div class="container">
+
+<div class="summary">
+
+<div class="card">
+<h3>Total Revenue</h3>
+<h2 id="revenue">₹0</h2>
+</div>
+
+<div class="card">
+<h3>Total Payments</h3>
+<h2 id="payments">0</h2>
+</div>
+
+<div class="card">
+<h3>Pending Payout</h3>
+<h2 id="pending">₹0</h2>
+</div>
+
+</div>
+
+<input
+type="text"
+id="search"
+placeholder="Search Payment..."
+onkeyup="searchPayments()">
+
+<div id="paymentList"></div>
+
+<button
+class="export"
+onclick="exportCSV()">
+
+📥 Export CSV
+
+</button>
+
+<button
+class="back"
+onclick="window.location='index.html'">
+
+⬅ Back
+
+</button>
+
+</div>
+
+<script>
+
+let rides=JSON.parse(localStorage.getItem("rides"))||[];
+
+function loadPayments(data){
+
+let html="";
+
+let revenue=0;
+
+data.forEach(function(ride,index){
+
+let fare=parseInt(String(ride.fare).replace(/[^\d]/g,""))||0;
+
+revenue+=fare;
+
+html+=`
+
+<div class="payment">
+
+<p><b>Vehicle:</b> ${ride.vehicle}</p>
+
+<p><b>Pickup:</b> ${ride.pickup}</p>
+
+<p><b>Drop:</b> ${ride.drop}</p>
+
+<p><b>Fare:</b> ₹${fare}</p>
+
+<p><b>Status:</b> ${ride.status}</p>
+
+<button class="paid">
+Paid
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("paymentList").innerHTML=html;
+
+document.getElementById("revenue").innerHTML="₹"+revenue;
+
+document.getElementById("payments").innerHTML=data.length;
+
+document.getElementById("pending").innerHTML="₹"+Math.floor(revenue*0.20);
+
+}
+
+function searchPayments(){
+
+let key=document.getElementById("search").value.toLowerCase();
+
+let result=rides.filter(function(r){
+
+return String(r.pickup).toLowerCase().includes(key)
+
+||
+
+String(r.drop).toLowerCase().includes(key)
+
+||
+
+String(r.vehicle).toLowerCase().includes(key);
+
+});
+
+loadPayments(result);
+
+}
+
+function exportCSV(){
+
+let csv="Vehicle,Pickup,Drop,Fare,Status\n";
+
+rides.forEach(function(r){
+
+csv+=`${r.vehicle},${r.pickup},${r.drop},${r.fare},${r.status}\n`;
+
+});
+
+let blob=new Blob([csv],{type:"text/csv"});
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="payments.csv";
+
+a.click();
+
+}
+
+loadPayments(rides);
+
+</script>
+
+</body>
+</html>
